@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DjangoMidterm</title>
+</head>
+<body>
+    <header>
+        Welcome to Ilim's Project!
+        <hr>
+    </header>
+
+    <form action="{% url 'myapp:vote' question.id %}" method="post">
+        {% csrf_token %}
+        <fieldset>
+            <legend><h1>{{ question.question_text }}</h1></legend>
+            {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+            {% for choice in question.choice_set.all %}
+                <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}">
+                <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label><br>
+            {% endfor %}
+        </fieldset>
+        <input type="submit" value="Vote">
+    </form>
+
+{% comment %}
+	  <ul>
+	    {% for choice in question.choice_set.all %}
+	        <li>{{ choice.choice_text }}</li>
+	    {% endfor %}
+	    </ul>
+{% endcomment %}
+
+    <h2>Answers:</h2>
+    <div>
+        <a href="{% url 'myapp:add_answer' question.id%}">Add a New Answer</a>
+        <br>
+    </div>
+    <ul>
+        {% for answer in answers %}
+            <li>{{answer.nickname}}: {{ answer.answer_text }}</li>
+        {% endfor %}
+    </ul>
+
+    <a href="{% url 'myapp:update_question' question.id %}">Update this question</a>
+    <hr>
+    <form method="post" action="{% url 'myapp:delete_question' question.id %}">
+        {% csrf_token %}
+        <button type="submit">Delete</button>
+    </form>
+    <hr>
+    <br>
+    <a href="{% url 'myapp:index' %}">Back to Main Page</a>
+</body>
+</html>
